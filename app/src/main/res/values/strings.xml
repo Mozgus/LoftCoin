@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LoftCoin</string>
+    <string name="welcome_start_btn">Start</string>
 </resources>
