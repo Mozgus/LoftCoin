@@ -3,6 +3,7 @@ package com.berryjam.loftcoin.screens.welcome;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @BindView(R.id.start_btn)
     Button startBtn;
+    @BindView(R.id.pager)
+    ViewPager pager;
 
     public static void startInNewTask(Context context) {
         Intent starter = new Intent(context, WelcomeActivity.class);
@@ -33,6 +36,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        pager.setAdapter(new WelcomeActivityPagerAdapter(getSupportFragmentManager()));
         final Prefs prefs = ((App) getApplication()).getPrefs();
 
         startBtn.setOnClickListener(new View.OnClickListener() {

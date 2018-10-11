@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <!--Main color scheme-->
+    <color name="colorPrimary">#191A29</color>
+    <color name="colorPrimaryDark">#101019</color>
+    <color name="colorAccent">#F6CA1D</color>
+
+    <color name="primary_text_color">#FFFFFF</color>
+    <color name="secondary_text_color">#9A9CB5</color>
+    <color name="secondary_text_color_dark">#66688F</color>
+
+    <!--Custom colors-->
+    <color name="white">#FFFFFFFF</color>
+    <color name="white30">#4DFFFFFF</color>
+
+    <color name="gradient_start">@color/colorAccent</color>
+    <color name="gradient_end">#FF4465</color>
+
 </resources>
