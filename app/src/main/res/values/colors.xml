@@ -15,5 +15,7 @@
 
     <color name="gradient_start">@color/colorAccent</color>
     <color name="gradient_end">#FF4465</color>
+    <color name="gradient_shadow_start">#02323348</color>
+    <color name="gradient_shadow_end">#3366688F</color>
 
 </resources>
