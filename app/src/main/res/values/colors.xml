@@ -8,15 +8,20 @@
     <color name="primary_text_color">#FFFFFF</color>
     <color name="secondary_text_color">#9A9CB5</color>
     <color name="secondary_text_color_dark">#66688F</color>
-    <color name="color_unchecked_navigation_item">#51526B</color>
 
     <!--Custom colors-->
     <color name="white">#FFFFFFFF</color>
     <color name="white30">#4DFFFFFF</color>
+    <color name="green">#3DE77B</color>
+    <color name="red">#FF4464</color>
+    <color name="black">#000000</color>
 
     <color name="gradient_start">@color/colorAccent</color>
     <color name="gradient_end">#FF4465</color>
     <color name="gradient_shadow_start">#02323348</color>
     <color name="gradient_shadow_end">#3366688F</color>
+    <color name="color_unchecked_navigation_item">#51526B</color>
+    <color name="percent_change_up">@color/green</color>
+    <color name="percent_change_down">@color/red</color>
 
 </resources>

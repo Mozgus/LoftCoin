@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="welcome_start_btn">Начать</string>
-
     <string name="welcome_title_1">Покупка и продажа</string>
     <string name="welcome_title_2">Курс криптовалют</string>
     <string name="welcome_title_3">Конвертер валют</string>
@@ -11,5 +10,6 @@
     <string name="bottom_navigation_item_accounts">Кошельки</string>
     <string name="bottom_navigation_item_rate">Курс</string>
     <string name="bottom_navigation_item_converter">Конвертер</string>
+    <string name="rate_screen_title">Курс криптовалют</string>
 
 </resources>
