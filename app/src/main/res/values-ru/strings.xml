@@ -8,5 +8,8 @@
     <string name="welcome_subtitle_1">Покупай когда дешево, продавай когда дорого.</string>
     <string name="welcome_subtitle_2">Следи за курсом валют и вовремя реагируй на изменения динамики цены.</string>
     <string name="welcome_subtitle_3">Узнай сколько эфира в 1.23 биткоина.</string>
+    <string name="bottom_navigation_item_accounts">Кошельки</string>
+    <string name="bottom_navigation_item_rate">Курс</string>
+    <string name="bottom_navigation_item_converter">Конвертер</string>
 
 </resources>
