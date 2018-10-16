@@ -23,5 +23,7 @@
     <color name="color_unchecked_navigation_item">#51526B</color>
     <color name="percent_change_up">@color/green</color>
     <color name="percent_change_down">@color/red</color>
+    <color name="rate_item_background_even">@color/colorPrimary</color>
+    <color name="rate_item_background_odd">#212237</color>
 
 </resources>
