@@ -5,8 +5,14 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.berryjam.loftcoin.data.api.Api;
+import com.berryjam.loftcoin.data.api.model.Coin;
 import com.berryjam.loftcoin.data.api.model.RateResponse;
+import com.berryjam.loftcoin.data.db.Database;
+import com.berryjam.loftcoin.data.db.model.CoinEntity;
+import com.berryjam.loftcoin.data.db.model.CoinEntityMapper;
 import com.berryjam.loftcoin.data.prefs.Prefs;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,13 +24,17 @@ class StartPresenterImpl implements StartPresenter {
 
     private Api api;
     private Prefs prefs;
+    private Database database;
+    private CoinEntityMapper mapper;
 
     @Nullable
     private StartView view;
 
-    public StartPresenterImpl(Api api, Prefs prefs) {
+    StartPresenterImpl(Api api, Prefs prefs, Database database, CoinEntityMapper entityMapper) {
         this.api = api;
         this.prefs = prefs;
+        this.database = database;
+        this.mapper = entityMapper;
     }
 
     @Override
@@ -42,6 +52,11 @@ class StartPresenterImpl implements StartPresenter {
         api.ticker("structure", prefs.getFiatCurrency().name()).enqueue(new Callback<RateResponse>() {
             @Override
             public void onResponse(@NonNull Call<RateResponse> call, @NonNull Response<RateResponse> response) {
+                if(null != response.body()){
+                    List<Coin> coins = response.body().data;
+                    List<CoinEntity> entities = mapper.mapCoins(coins);
+                    database.saveCoins(entities);
+                }
                 if (view != null) {
                     view.navigateToMainScreen();
                 }
