@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import com.berryjam.loftcoin.App;
 import com.berryjam.loftcoin.R;
 import com.berryjam.loftcoin.data.api.Api;
+import com.berryjam.loftcoin.data.db.Database;
+import com.berryjam.loftcoin.data.db.model.CoinEntityMapper;
 import com.berryjam.loftcoin.data.prefs.Prefs;
 import com.berryjam.loftcoin.screens.main.MainActivity;
 
@@ -28,8 +30,6 @@ public class StartActivity extends AppCompatActivity implements StartView {
     }
 
     private StartPresenter presenter;
-    private Api api;
-    private Prefs prefs;
 
     @BindView(R.id.start_top_corner)
     ImageView topCorner;
@@ -42,9 +42,12 @@ public class StartActivity extends AppCompatActivity implements StartView {
         setContentView(R.layout.activity_start);
         ButterKnife.bind(this);
 
-        api = ((App) getApplication()).getApi();
-        prefs = ((App) getApplication()).getPrefs();
-        presenter = new StartPresenterImpl(api, prefs);
+        Api api = ((App) getApplication()).getApi();
+        Prefs prefs = ((App) getApplication()).getPrefs();
+        Database database = ((App) getApplication()).getDatabase();
+        CoinEntityMapper entityMapper = new CoinEntityMapper();
+
+        presenter = new StartPresenterImpl(api, prefs, database, entityMapper);
         presenter.attachView(this);
         presenter.loadRate();
     }

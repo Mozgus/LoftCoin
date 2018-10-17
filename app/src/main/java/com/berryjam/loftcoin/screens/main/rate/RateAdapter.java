@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.berryjam.loftcoin.R;
-import com.berryjam.loftcoin.data.api.model.Coin;
-import com.berryjam.loftcoin.data.api.model.Quote;
+import com.berryjam.loftcoin.data.db.model.CoinEntity;
+import com.berryjam.loftcoin.data.db.model.QuoteEntity;
 import com.berryjam.loftcoin.data.model.Currency;
 import com.berryjam.loftcoin.data.model.Fiat;
 import com.berryjam.loftcoin.data.prefs.Prefs;
@@ -28,14 +28,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateViewHolder> {
-    private List<Coin> coins = Collections.emptyList();
+    private List<CoinEntity> coins = Collections.emptyList();
     private Prefs prefs;
 
     RateAdapter(Prefs prefs) {
         this.prefs = prefs;
     }
 
-    void setCoins(List<Coin> coins) {
+    void setCoins(List<CoinEntity> coins) {
         this.coins = coins;
         notifyDataSetChanged();
     }
@@ -95,7 +95,7 @@ public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateViewHolder
             this.prefs = prefs;
         }
 
-        void bind(Coin coin, int position) {
+        void bind(CoinEntity coin, int position) {
             bindIcon(coin);
             bindSymbol(coin);
             bindPrice(coin);
@@ -111,8 +111,8 @@ public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateViewHolder
             }
         }
 
-        private void bindPercentage(Coin coin) {
-            Quote quote = coin.quotes.get(prefs.getFiatCurrency().name());
+        private void bindPercentage(CoinEntity coin) {
+            QuoteEntity quote = coin.getQuote(prefs.getFiatCurrency());
             if (null != quote) {
                 float percentChangeValue = quote.percentChange24h;
                 percentChange.setText(context.getString(R.string.rate_item_percent_change, percentChangeValue));
@@ -124,20 +124,20 @@ public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateViewHolder
             }
         }
 
-        private void bindPrice(Coin coin) {
+        private void bindPrice(CoinEntity coin) {
             Fiat fiat = prefs.getFiatCurrency();
-            Quote quote = coin.quotes.get(fiat.name());
+            QuoteEntity quote = coin.getQuote(fiat);
             if (null != quote) {
                 String value = currencyFormatter.format(quote.price, false);
                 price.setText(context.getString(R.string.currency_amount, value, fiat.symbol));
             }
         }
 
-        private void bindSymbol(Coin coin) {
+        private void bindSymbol(CoinEntity coin) {
             name.setText(coin.symbol);
         }
 
-        private void bindIcon(Coin coin) {
+        private void bindIcon(CoinEntity coin) {
             Currency currency = Currency.getCurrency(coin.symbol);
             if (currency != null) {
                 symbolIcon.setVisibility(View.VISIBLE);
