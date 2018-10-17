@@ -2,6 +2,7 @@ package com.berryjam.loftcoin.data.api;
 
 import com.berryjam.loftcoin.BuildConfig;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -19,7 +20,7 @@ public class ApiInitializer {
     }
 
     private Gson createGson() {
-        return new Gson().newBuilder().create();
+        return new GsonBuilder().create();
     }
 
     private OkHttpClient createOkHttpClient() {
