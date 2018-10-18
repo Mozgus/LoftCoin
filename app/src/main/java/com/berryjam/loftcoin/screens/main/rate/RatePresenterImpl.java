@@ -1,28 +1,27 @@
 package com.berryjam.loftcoin.screens.main.rate;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.berryjam.loftcoin.data.api.Api;
-import com.berryjam.loftcoin.data.api.model.Coin;
-import com.berryjam.loftcoin.data.api.model.RateResponse;
 import com.berryjam.loftcoin.data.db.Database;
-import com.berryjam.loftcoin.data.db.model.CoinEntity;
 import com.berryjam.loftcoin.data.db.model.CoinEntityMapper;
 import com.berryjam.loftcoin.data.prefs.Prefs;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class RatePresenterImpl implements RatePresenter {
+    private static final String TAG = "RatePresenterImpl";
 
     private Api api;
     private Prefs prefs;
     private Database database;
     private CoinEntityMapper mapper;
+
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     @Nullable
     private RateView view;
@@ -41,15 +40,22 @@ public class RatePresenterImpl implements RatePresenter {
 
     @Override
     public void detachView() {
+        disposables.dispose();
         this.view = null;
     }
 
     @Override
     public void getRate() {
-        List<CoinEntity> coins = database.getCoins();
-        if (null != view) {
-            view.setCoins(coins);
-        }
+        Disposable disposable = database.getCoins()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(coinEntities -> {
+                            if (null != view) {
+                                view.setCoins(coinEntities);
+                            }
+                        }, throwable -> {
+                        }
+                );
+        disposables.add(disposable);
     }
 
     @Override
@@ -58,29 +64,26 @@ public class RatePresenterImpl implements RatePresenter {
     }
 
     private void loadRate() {
-        api.ticker("array", prefs.getFiatCurrency().name()).enqueue(new Callback<RateResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<RateResponse> call, @NonNull Response<RateResponse> response) {
-                if (null != response.body()) {
-                    List<Coin> coins = response.body().data;
-                    List<CoinEntity> entities = mapper.mapCoins(coins);
-                    database.saveCoins(entities);
-                    if (null != view) {
-                        view.setCoins(entities);
-                    }
-                }
-                if (null != view) {
-                    view.setRefreshing(false);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<RateResponse> call, @NonNull Throwable t) {
-                if (view != null) {
-                    view.setRefreshing(false);
-                }
-            }
-        });
+        Disposable disposable = api.ticker("array", prefs.getFiatCurrency().name())
+                .subscribeOn(Schedulers.io())
+                .map(rateResponse -> mapper.mapCoins(rateResponse.data))
+                .map(coinEntities -> {
+                    database.saveCoins(coinEntities);
+                    return new Object();
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object -> {
+                            if (null != view) {
+                                view.setRefreshing(false);
+                            }
+                        }, throwable -> {
+                            Log.e(TAG, "loadRate: ", throwable);
+                            if (null != view) {
+                                view.setRefreshing(false);
+                            }
+                        }
+                );
+        disposables.add(disposable);
     }
 
 }
