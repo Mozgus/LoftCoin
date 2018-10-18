@@ -12,6 +12,7 @@
     <!--Custom colors-->
     <color name="white">#FFFFFFFF</color>
     <color name="white30">#4DFFFFFF</color>
+    <color name="gray_50">#313249</color>
     <color name="green">#3DE77B</color>
     <color name="red">#FF4464</color>
     <color name="black">#000000</color>
