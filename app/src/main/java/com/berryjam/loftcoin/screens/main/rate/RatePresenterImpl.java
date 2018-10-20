@@ -6,6 +6,7 @@ import android.util.Log;
 import com.berryjam.loftcoin.data.api.Api;
 import com.berryjam.loftcoin.data.db.Database;
 import com.berryjam.loftcoin.data.db.model.CoinEntityMapper;
+import com.berryjam.loftcoin.data.model.Fiat;
 import com.berryjam.loftcoin.data.prefs.Prefs;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -60,6 +61,19 @@ public class RatePresenterImpl implements RatePresenter {
 
     @Override
     public void onRefresh() {
+        loadRate();
+    }
+
+    @Override
+    public void onMenuItemCurrencyClick() {
+        if (null != view) {
+            view.showCurrencyDialog();
+        }
+    }
+
+    @Override
+    public void onFiatCurrencySelected(Fiat currency) {
+        prefs.setFiatCurrency(currency); // save our currency in prefs
         loadRate();
     }
 

@@ -13,6 +13,8 @@ import com.berryjam.loftcoin.data.model.Fiat;
 
 
 public class CurrencyDialog extends DialogFragment {
+    public static final String TAG = "CurrencyDialog";
+
     private CurrencyDialogListener listener;
 
     @NonNull
