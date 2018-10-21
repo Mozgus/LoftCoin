@@ -61,7 +61,7 @@ public class RatePresenterImpl implements RatePresenter {
 
     @Override
     public void onRefresh() {
-        loadRate();
+        loadRate(true);
     }
 
     @Override
@@ -74,10 +74,13 @@ public class RatePresenterImpl implements RatePresenter {
     @Override
     public void onFiatCurrencySelected(Fiat currency) {
         prefs.setFiatCurrency(currency); // save our currency in prefs
-        loadRate();
+        loadRate(false);
     }
 
-    private void loadRate() {
+    private void loadRate(Boolean fromRefresh) {
+        if (null != view && !fromRefresh) {
+            view.showProgress();
+        }
         Disposable disposable = api.ticker("array", prefs.getFiatCurrency().name())
                 .subscribeOn(Schedulers.io())
                 .map(rateResponse -> mapper.mapCoins(rateResponse.data))
@@ -88,12 +91,20 @@ public class RatePresenterImpl implements RatePresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object -> {
                             if (null != view) {
-                                view.setRefreshing(false);
+                                if (fromRefresh) {
+                                    view.setRefreshing(false);
+                                } else {
+                                    view.hideProgress();
+                                }
                             }
                         }, throwable -> {
                             Log.e(TAG, "loadRate: ", throwable);
                             if (null != view) {
-                                view.setRefreshing(false);
+                                if (fromRefresh) {
+                                    view.setRefreshing(false);
+                                } else {
+                                    view.hideProgress();
+                                }
                             }
                         }
                 );

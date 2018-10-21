@@ -39,6 +39,8 @@ public class RateFragment extends Fragment implements RateView,
     Toolbar toolbar;
     @BindView(R.id.rate_refresh)
     SwipeRefreshLayout refresh;
+    @BindView(R.id.progress)
+    ViewGroup progress;
 
     private RatePresenter presenter;
     private RateAdapter adapter;
@@ -120,6 +122,16 @@ public class RateFragment extends Fragment implements RateView,
         if (null != fragmentManager) {
             dialog.show(fragmentManager, CurrencyDialog.TAG);
         }
+    }
+
+    @Override
+    public void showProgress() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progress.setVisibility(View.GONE);
     }
 
     @Override
