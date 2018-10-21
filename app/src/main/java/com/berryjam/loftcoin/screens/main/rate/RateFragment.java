@@ -2,6 +2,7 @@ package com.berryjam.loftcoin.screens.main.rate;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import com.berryjam.loftcoin.data.model.Fiat;
 import com.berryjam.loftcoin.data.prefs.Prefs;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +34,7 @@ import butterknife.Unbinder;
 
 public class RateFragment extends Fragment implements RateView,
         Toolbar.OnMenuItemClickListener, CurrencyDialog.CurrencyDialogListener {
+    public static final String LAYOUT_MANAGER_STATE = "layout_manager_state";
 
     @BindView(R.id.rate_recycler)
     RecyclerView recycler;
@@ -45,6 +48,7 @@ public class RateFragment extends Fragment implements RateView,
     private RatePresenter presenter;
     private RateAdapter adapter;
     private Unbinder unbinder;
+    private Parcelable layoutManagerState;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,6 +101,13 @@ public class RateFragment extends Fragment implements RateView,
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(LAYOUT_MANAGER_STATE,
+                Objects.requireNonNull(recycler.getLayoutManager()).onSaveInstanceState());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onDestroyView() {
         unbinder.unbind();
         presenter.detachView();
@@ -106,6 +117,10 @@ public class RateFragment extends Fragment implements RateView,
     @Override
     public void setCoins(List<CoinEntity> coins) {
         adapter.setCoins(coins);
+        if (null != layoutManagerState) {
+            Objects.requireNonNull(recycler.getLayoutManager()).onRestoreInstanceState(layoutManagerState);
+            layoutManagerState = null;
+        }
     }
 
     @Override
