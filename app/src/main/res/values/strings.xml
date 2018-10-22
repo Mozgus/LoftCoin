@@ -24,6 +24,8 @@
     <string name="dialog_currency_rouble">Rouble | RUB</string>
 
     <string name="converter_screen_title">Converter</string>
+    <string name="currencies_bottom_sheet_title">Select currency</string>
+    <string name="currencies_bottom_sheet_currency_name" translatable="false">%s | %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
