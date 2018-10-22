@@ -6,6 +6,7 @@ import android.util.Log;
 import com.berryjam.loftcoin.data.api.Api;
 import com.berryjam.loftcoin.data.db.Database;
 import com.berryjam.loftcoin.data.db.model.CoinEntityMapper;
+import com.berryjam.loftcoin.data.model.Fiat;
 import com.berryjam.loftcoin.data.prefs.Prefs;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -60,10 +61,26 @@ public class RatePresenterImpl implements RatePresenter {
 
     @Override
     public void onRefresh() {
-        loadRate();
+        loadRate(true);
     }
 
-    private void loadRate() {
+    @Override
+    public void onMenuItemCurrencyClick() {
+        if (null != view) {
+            view.showCurrencyDialog();
+        }
+    }
+
+    @Override
+    public void onFiatCurrencySelected(Fiat currency) {
+        prefs.setFiatCurrency(currency); // save our currency in prefs
+        loadRate(false);
+    }
+
+    private void loadRate(Boolean fromRefresh) {
+        if (null != view && !fromRefresh) {
+            view.showProgress();
+        }
         Disposable disposable = api.ticker("array", prefs.getFiatCurrency().name())
                 .subscribeOn(Schedulers.io())
                 .map(rateResponse -> mapper.mapCoins(rateResponse.data))
@@ -74,12 +91,20 @@ public class RatePresenterImpl implements RatePresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object -> {
                             if (null != view) {
-                                view.setRefreshing(false);
+                                if (fromRefresh) {
+                                    view.setRefreshing(false);
+                                } else {
+                                    view.hideProgress();
+                                }
                             }
                         }, throwable -> {
                             Log.e(TAG, "loadRate: ", throwable);
                             if (null != view) {
-                                view.setRefreshing(false);
+                                if (fromRefresh) {
+                                    view.setRefreshing(false);
+                                } else {
+                                    view.hideProgress();
+                                }
                             }
                         }
                 );
