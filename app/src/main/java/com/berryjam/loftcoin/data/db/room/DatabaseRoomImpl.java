@@ -24,4 +24,9 @@ public class DatabaseRoomImpl implements Database {
         return database.coinDao().getCoins();
     }
 
+    @Override
+    public CoinEntity getCoin(String symbol) {
+        return database.coinDao().getCoin(symbol);
+    }
+
 }
