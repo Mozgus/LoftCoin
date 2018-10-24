@@ -2,6 +2,8 @@ package com.berryjam.loftcoin.data.db.room;
 
 import com.berryjam.loftcoin.data.db.Database;
 import com.berryjam.loftcoin.data.db.model.CoinEntity;
+import com.berryjam.loftcoin.data.db.model.Transaction;
+import com.berryjam.loftcoin.data.db.model.TransactionModel;
 import com.berryjam.loftcoin.data.db.model.Wallet;
 import com.berryjam.loftcoin.data.db.model.WalletModel;
 
@@ -34,6 +36,16 @@ public class DatabaseRoomImpl implements Database {
     @Override
     public Flowable<List<WalletModel>> getWallets() {
         return database.walletDao().getWallets();
+    }
+
+    @Override
+    public void saveTransactions(List<Transaction> transactions) {
+        database.walletDao().saveTransactions(transactions);
+    }
+
+    @Override
+    public Flowable<List<TransactionModel>> getTransactions(String walletId) {
+        return database.walletDao().getTransactions(walletId);
     }
 
     @Override

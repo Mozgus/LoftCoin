@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.berryjam.loftcoin.data.db.model.CoinEntity;
+import com.berryjam.loftcoin.data.db.model.TransactionModel;
 import com.berryjam.loftcoin.data.db.model.WalletModel;
 
 import java.util.List;
@@ -29,5 +30,7 @@ public abstract class WalletsViewModel extends AndroidViewModel {
     public abstract LiveData<Boolean> newWalletVisible();
 
     public abstract LiveData<Object> selectCurrency();
+
+    public abstract LiveData<List<TransactionModel>> transactions();
 
 }

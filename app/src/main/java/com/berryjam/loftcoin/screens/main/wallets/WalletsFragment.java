@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import com.berryjam.loftcoin.data.db.model.CoinEntity;
 import com.berryjam.loftcoin.data.prefs.Prefs;
 import com.berryjam.loftcoin.screens.currencies.CurrenciesBottomSheet;
 import com.berryjam.loftcoin.screens.currencies.CurrenciesBottomSheetListener;
+import com.berryjam.loftcoin.screens.main.wallets.adapters.TransactionsAdapter;
 import com.berryjam.loftcoin.screens.main.wallets.adapters.WalletsPagerAdapter;
 
 import java.util.Objects;
@@ -37,8 +40,11 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
     ViewPager walletsPager;
     @BindView(R.id.new_wallet)
     ViewGroup newWallet;
+    @BindView(R.id.transactions_recycler)
+    RecyclerView transactionsRecycler;
 
     private WalletsPagerAdapter walletsPagerAdapter;
+    private TransactionsAdapter transactionsAdapter;
     private WalletsViewModel viewModel;
 
     public WalletsFragment() {
@@ -51,6 +57,7 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
         viewModel = ViewModelProviders.of(this).get(WalletsViewModelImpl.class);
         Prefs prefs = ((App) Objects.requireNonNull(getActivity()).getApplication()).getPrefs();
         walletsPagerAdapter = new WalletsPagerAdapter(prefs);
+        transactionsAdapter = new TransactionsAdapter(prefs);
     }
 
     @Override
@@ -74,6 +81,10 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
         walletsPager.setPageMargin(-pageMargin);
         walletsPager.setOffscreenPageLimit(5);
         walletsPager.setAdapter(walletsPagerAdapter);
+
+        transactionsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        transactionsRecycler.setHasFixedSize(true);
+        transactionsRecycler.setAdapter(transactionsAdapter);
 
         FragmentManager fragmentManager = getFragmentManager();
         if (null != fragmentManager) {
@@ -99,6 +110,8 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
     }
 
     private void initInputs() {
+        viewModel.transactions().observe(this, transactionModels ->
+                transactionsAdapter.setTransactions(transactionModels));
         viewModel.wallets().observe(this, wallets ->
                 walletsPagerAdapter.setWallets(wallets));
         viewModel.walletsVisible().observe(this, visible -> {
