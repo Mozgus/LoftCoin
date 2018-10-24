@@ -18,5 +18,7 @@
     <string name="dialog_currency_rouble">Рубль | RUB</string>
     <string name="converter_screen_title">Конвертер</string>
     <string name="currencies_bottom_sheet_title">Выбор валюты</string>
+    <string name="accounts_screen_title">Кошельки</string>
+    <string name="wallets_menu_item_new_wallet">Новый кошелёк</string>
 
 </resources>
