@@ -23,6 +23,8 @@ public abstract class WalletsViewModel extends AndroidViewModel {
 
     public abstract void onCurrencySelected(CoinEntity coin);
 
+    public abstract void onWalletChanged(int position);
+
     public abstract LiveData<List<WalletModel>> wallets();
 
     public abstract LiveData<Boolean> walletsVisible();

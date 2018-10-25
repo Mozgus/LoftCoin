@@ -33,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WalletsFragment extends Fragment implements CurrenciesBottomSheetListener {
+    private static final String VIEW_PAGER_POS = "view_page_pos";
 
     @BindView(R.id.wallets_toolbar)
     Toolbar toolbar;
@@ -46,6 +47,7 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
     private WalletsPagerAdapter walletsPagerAdapter;
     private TransactionsAdapter transactionsAdapter;
     private WalletsViewModel viewModel;
+    private Integer restoredViewPagerPos;
 
     public WalletsFragment() {
         // Required empty public constructor
@@ -94,6 +96,10 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
             }
         }
 
+        if (savedInstanceState != null) {
+            restoredViewPagerPos = savedInstanceState.getInt(VIEW_PAGER_POS, 0);
+        }
+
         viewModel.getWallets();
 
         initOutputs();
@@ -102,18 +108,28 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
 
     private void initOutputs() {
         newWallet.setOnClickListener(view -> viewModel.onNewWalletClick());
-
         toolbar.getMenu().findItem(R.id.menu_item_add_wallet).setOnMenuItemClickListener(menuItem -> {
             viewModel.onNewWalletClick();
             return true;
+        });
+        walletsPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                viewModel.onWalletChanged(position);
+            }
         });
     }
 
     private void initInputs() {
         viewModel.transactions().observe(this, transactionModels ->
                 transactionsAdapter.setTransactions(transactionModels));
-        viewModel.wallets().observe(this, wallets ->
-                walletsPagerAdapter.setWallets(wallets));
+        viewModel.wallets().observe(this, wallets -> {
+            walletsPagerAdapter.setWallets(wallets);
+            if (null != restoredViewPagerPos) {
+                walletsPager.setCurrentItem(restoredViewPagerPos);
+                restoredViewPagerPos = null;
+            }
+        });
         viewModel.walletsVisible().observe(this, visible -> {
             if (null != visible) walletsPager.setVisibility(visible ? View.VISIBLE : View.GONE);
         });
@@ -133,6 +149,12 @@ public class WalletsFragment extends Fragment implements CurrenciesBottomSheetLi
     @Override
     public void onCurrencySelected(CoinEntity coin) {
         viewModel.onCurrencySelected(coin);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(VIEW_PAGER_POS, walletsPager.getCurrentItem());
+        super.onSaveInstanceState(outState);
     }
 
     private int getScreenWidth() {

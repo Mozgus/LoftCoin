@@ -16,6 +16,7 @@ import com.berryjam.loftcoin.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -64,9 +65,7 @@ public class WalletsViewModelImpl extends WalletsViewModel {
 
     public WalletsViewModelImpl(@NonNull Application application) {
         super(application);
-
         database = ((App) application).getDatabase();
-
     }
 
     @Override
@@ -116,6 +115,12 @@ public class WalletsViewModelImpl extends WalletsViewModel {
                     return new Object();
                 }).subscribeOn(Schedulers.io())
                         .subscribe());
+    }
+
+    @Override
+    public void onWalletChanged(int position) {
+        Wallet wallet = Objects.requireNonNull(walletsItems.getValue()).get(position).wallet;
+        getTransaction(wallet.walletId);
     }
 
     private List<Transaction> randomTransactions(Wallet wallet) {
